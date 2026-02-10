@@ -12,6 +12,7 @@ class HomeLoadingState extends HomeStates{}
 
 class HomeErrorState extends HomeStates{}
 
+
 class HomeSuccessState extends HomeStates{
 
   final List<ProductDataModel> list;
@@ -22,6 +23,14 @@ class HomeSuccessState extends HomeStates{
 
 }
 
+class HomeAddToCartState extends HomeStates{}
+
+class HomeAddToWishListState extends HomeStates{}
+
 class HomeNavigateCartActionStates extends HomeActionStates{}
 
 class HomeNavigateWishListActionStates extends HomeActionStates{}
+
+class HomeAddedToWishListState extends HomeActionStates{}
+
+class HomeAddedToCartListState extends HomeActionStates{}

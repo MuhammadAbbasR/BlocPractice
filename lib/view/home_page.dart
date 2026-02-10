@@ -18,19 +18,55 @@ class HomePage extends StatelessWidget {
       listenWhen: (previous, current) => current is HomeActionStates,
       buildWhen: (previous, current) => current is! HomeActionStates,
       listener: (context, state) {
+        print("listener working");
+        print(state.runtimeType);
+        if (state is HomeAddedToCartListState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Item added to cart 🛒'),
+              backgroundColor: Colors.blue,
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+
+        if (state is HomeAddedToWishListState) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Item added to wishlist ❤️'),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+
         if (state is HomeNavigateCartActionStates) {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CartPage()),
           );
         } else if (state is HomeNavigateWishListActionStates) {
+
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => WishlistPage()),
+            MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                value: homeBloc,
+                child: const WishlistPage(),
+              ),
+            ),
           );
+
+
         }
+
+
+
       },
       builder: (context, state) {
+        print(state.runtimeType);
         switch (state.runtimeType) {
 
           case HomeLoadingState :
@@ -155,28 +191,25 @@ class HomePage extends StatelessWidget {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+
+                            // Heart → Wishlist
                             IconButton(
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                color: Colors.red,
-                              ),
+                              icon: const Icon(Icons.favorite_border, color: Colors.red),
                               onPressed: () {
-                                //   BlocProvider.of<HomeBloc>(context)
-                                //       .add(HomeProductWishlistButtonClickedEvent(
-                                //       clickedProduct: product));
+                                BlocProvider.of<HomeBloc>(context)
+                                    .add(HomeButtonAddToWishListEvent(product));
                               },
                             ),
+
                             IconButton(
-                              icon: const Icon(
-                                Icons.add_shopping_cart,
-                                color: Colors.blue,
-                              ),
+                              icon: const Icon(Icons.add_shopping_cart, color: Colors.blue),
                               onPressed: () {
-                                //   BlocProvider.of<HomeBloc>(context)
-                                //       .add(HomeProductCartButtonClickedEvent(
-                                //       clickedProduct: product));
+                                BlocProvider.of<HomeBloc>(context)
+                                    .add(HomeButtonAddToCartListEvent(product));
                               },
                             ),
+
+
                           ],
                         ),
                       ),
