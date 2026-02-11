@@ -4,9 +4,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/cart_bloc/cart_bloc.dart';
 import '../data/wishlist_items.dart';
 
-class WishlistPage extends StatelessWidget {
+class WishlistPage extends StatefulWidget {
   const WishlistPage({super.key});
 
+  @override
+  State<WishlistPage> createState() => _WishlistPageState();
+}
+
+class _WishlistPageState extends State<WishlistPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    
+   // context.read<HomeBloc>().add(FetchWishlistEvent());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,7 +26,7 @@ class WishlistPage extends StatelessWidget {
       body: BlocBuilder<HomeBloc, HomeStates>(
 
         builder: (context, state) {
-          final items = wishlistItems; // always use the shared list
+          final items = wishlistItems;
 
           if (items.isEmpty) {
             return const Center(
@@ -37,7 +49,7 @@ class WishlistPage extends StatelessWidget {
                   trailing: IconButton(
                     icon: const Icon(Icons.delete, color: Colors.grey),
                     onPressed: () {
-
+                      context.read<HomeBloc>().add(HomeButtonRemoveToWishListEvent(product));
                     },
                   ),
                 ),

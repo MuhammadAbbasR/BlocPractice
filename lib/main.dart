@@ -5,7 +5,12 @@ import 'bloc/cart_bloc/cart_bloc.dart';
 
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    BlocProvider(
+      create: (_) => HomeBloc(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -15,10 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BlocProvider(
-        create: (_) => HomeBloc(),
-        child:  HomePage(),
-      ),
+      home:  HomePage(),
     );
   }
 }

@@ -1,87 +1,74 @@
 import 'dart:async';
-
 import 'package:bloc/bloc.dart';
-import 'package:bloc_practice/data/cart_items.dart';
-import 'package:bloc_practice/data/wishlist_items.dart';
-import 'package:bloc_practice/models/product_model.dart';
 import '../../data/grocerry_data.dart';
+import '../../data/cart_items.dart';
+import '../../data/wishlist_items.dart';
+import '../../models/product_model.dart';
+
 part 'cart_events.dart';
-part "cart_states.dart";
+part 'cart_states.dart';
 
-
-class HomeBloc extends Bloc<HomeEvents,HomeStates>{
-
-  HomeBloc():super(HomeInitial()){
-on<HomeInitialEvent>(homeInitialEvent);
-on<HomeNavigateToCartList>(homeCartListButtonNavigationEvent);
-on<HomeNavigateToWishList>(homeWishListButtonNavigationEvent);
-on<HomeButtonAddToCartListEvent>(homeAddToCartButtonEvent);
-on<HomeButtonAddToWishListEvent>(homeAddToWishListEvent);
-
-add(HomeInitialEvent());
-
+class HomeBloc extends Bloc<HomeEvents, HomeStates> {
+  HomeBloc() : super(HomeInitial()) {
+    on<HomeInitialEvent>(_homeInitialEvent);
+    on<HomeNavigateToCartList>(_homeNavigateToCartList);
+    on<HomeNavigateToWishList>(_homeNavigateToWishList);
+    on<HomeButtonAddToCartListEvent>(_homeAddToCart);
+    on<HomeButtonAddToWishListEvent>(_homeAddToWishList);
+    on<HomeButtonRemoveToCartListEvent>(_homeRemoveToCart);
+    on<HomeButtonRemoveToWishListEvent>(_homeRemoveToWishList);
+    add(HomeInitialEvent());
   }
 
-  FutureOr<void> homeInitialEvent(HomeInitialEvent event,Emitter<HomeStates> states)async{
-
+  Future<void> _homeInitialEvent(
+      HomeInitialEvent event, Emitter<HomeStates> emit) async {
     emit(HomeLoadingState());
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 1)); // simulate API call
     emit(HomeSuccessState(
-         GroceryData.groceryProducts
-            .map((e) => ProductDataModel(
-            id: e['id'],
-            name: e['name'],
-            description: e['description'],
-            price: e['price'],
-            imageUrl: e['imageUrl']))
-            .toList()));
-    
+      GroceryData.groceryProducts.map((e) => ProductDataModel(
+        id: e['id'],
+        name: e['name'],
+        description: e['description'],
+        price: e['price'],
+        imageUrl: e['imageUrl'],
+      )).toList(),
+    ));
   }
 
-  
-  FutureOr<void> homeAddToCartButtonEvent(
-      HomeButtonAddToCartListEvent event,Emitter<HomeStates> states
-      ){
-     
-    cartItems.add(event.productDataModel);
-   // emit(HomeAddToCartState());
-    print("Event cartlist pressed");
-    emit(HomeAddedToCartListState());
-  //  print("Current state: ${state.runtimeType}");
-
-  }
-
-  FutureOr<void> homeAddToWishListEvent(
-      HomeButtonAddToWishListEvent event, Emitter<HomeStates> states
-      )async{
-
-    wishlistItems.add(event.productDataModel);
- //   emit(HomeAddToWishListState());
-    print("Event wishlist pressed");
-   emit(HomeLoadingState());
-    await Future.delayed(Duration(seconds: 2));
-
-    emit(HomeAddedToWishListState());
-   // print("Current state: ${state.runtimeType}");
-
-  }
-  
-  FutureOr<void> homeWishListButtonNavigationEvent(
-      HomeNavigateToWishList event, Emitter<HomeStates> states)
-  {
-
-    print('NAVIGATE TO WISH LIST EVENT PRESS');
-    emit(HomeNavigateWishListActionStates());
-
-  }
-
-  FutureOr<void> homeCartListButtonNavigationEvent(
-      HomeNavigateToCartList event, Emitter<HomeStates> states
-      ){
-
-    print('NAVIGATE TO Cart LIST EVENT PRESS');
+  void _homeNavigateToCartList(
+      HomeNavigateToCartList event, Emitter<HomeStates> emit) {
     emit(HomeNavigateCartActionStates());
+  }
 
+  void _homeNavigateToWishList(
+      HomeNavigateToWishList event, Emitter<HomeStates> emit) {
+    emit(HomeNavigateWishListActionStates());
+  }
+
+  void _homeAddToCart(
+      HomeButtonAddToCartListEvent event, Emitter<HomeStates> emit) {
+    cartItems.add(event.productDataModel);
+    emit(HomeAddedToCartListState());
+  }
+
+  void _homeRemoveToCart(
+      HomeButtonRemoveToCartListEvent event, Emitter<HomeStates> emit
+      ){
+    cartItems.remove(event.productDataModel);
+    emit(HomeSuccessCartListFetchState());
+  }
+
+  void _homeAddToWishList(
+      HomeButtonAddToWishListEvent event, Emitter<HomeStates> emit) {
+    wishlistItems.add(event.productDataModel);
+    emit(HomeAddedToWishListState());
+  }
+
+  void _homeRemoveToWishList(
+      HomeButtonRemoveToWishListEvent event,Emitter<HomeStates> states
+      ){
+    wishlistItems.remove(event.productDataModel);
+    emit(HomeSuccessWishListFetchState());
   }
 
 }
