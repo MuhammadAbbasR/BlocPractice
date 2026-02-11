@@ -7,3 +7,4 @@ abstract class WishlistEvents {}
 class WishListFetch extends WishlistEvents{}
 
 class WishListRemove extends WishlistEvents{}
+
