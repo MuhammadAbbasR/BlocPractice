@@ -10,12 +10,9 @@ class WishListBloc extends Bloc<WishlistEvents,WishListStates>{
   //WishListBloc(super.initialState);
 
 
-  WishListBloc():super(WishlistInitialStates()){
-  // on<WishListFetch>(_wishListFetch);
+  WishListBloc():super(WishlistInitialStates()){// on<WishListFetch>(_wishListFetch);
   }
 
-  FutureOr<void> _wishListFetch(){
-
-  }
+  FutureOr<void> _wishListFetch(){}
 
 }
